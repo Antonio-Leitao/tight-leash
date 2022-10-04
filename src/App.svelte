@@ -8,21 +8,6 @@
     replace("/error");
   }
 
-  //FIREBASE
-
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "firebase/app";
-  import { getFirestore } from "firebase/firestore";
-
-
-  // Your web app's Firebase configuration
-  import { firebaseConfig } from "./lib/firebase_config.js";
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  //initialize firestore
-  const db = getFirestore(app);
-
-  //FIREBASE
 </script>
 
 <h2>Basic routing</h2>

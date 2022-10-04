@@ -6,16 +6,17 @@
   export let title;
   export let description;
   export let week;
+  export let updated;
 
   let menuItems = [
-    { name: "circle", displayText: "Pending", color:"blue" },
-    { name: "triangle", displayText: "Approved", color:"purple" },
-    { name: "square", displayText: "Doing" , color:"orange"},
-    { name: "octagon", displayText: "Denied", color:"red"},
-    { name: "hexagon", displayText: "Completed" , color:"green"},
+    { name: "circle", displayText: "Pending", color: "blue" },
+    { name: "triangle", displayText: "Approved", color: "purple" },
+    { name: "square", displayText: "Doing", color: "orange" },
+    { name: "octagon", displayText: "Denied", color: "red" },
+    { name: "hexagon", displayText: "Completed", color: "green" },
   ];
 
-  function handleThing(event) {
+  function changeTag(event) {
     console.log(event.detail.thing);
   }
 
@@ -28,6 +29,9 @@
     }
     if (week === 1) {
       return "Next week";
+    }
+    if (week > 10) {
+      return "Eventually";
     }
     return `In ${week} weeks`;
   }
@@ -46,11 +50,11 @@
       <div class="title">
         <EditableText value={title} />
       </div>
-      <div class="updated">Last updated by Antonio</div>
+      <div class="updated">Last updated by {updated}</div>
     </div>
     <div class="tags-date">
       <div class="tags">
-        <ContextMenu {menuItems} on:doThing{handleThing}>
+        <ContextMenu {menuItems} on:doThing{changeTag}>
           <div class="tag {tag}">
             {tag}
           </div>

@@ -1,6 +1,5 @@
 <script>
-
-let menuItems = [
+  let menuItems = [
     {
       name: "plus",
       displayText: "Add Task",
@@ -27,61 +26,24 @@ let menuItems = [
     },
   ];
 
-  let tasks = [
-    {
-      title: "Something that I want to do",
-      tag: "Pending",
-      week: -1,
-      description: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta deleniti
-    porro iusto autem, expedita neque numquam nam sint repellendus corporis?
-    Atque, iste amet reprehenderit odio cupiditate corrupti sequi totam dolor.`,
-    },
-    {
-      title: "Something I will be able to do",
-      tag: "Approved",
-      week: 0,
-      description: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta deleniti
-    porro iusto autem, expedita neque numquam nam sint repellendus corporis?
-    Atque, iste amet reprehenderit odio cupiditate corrupti sequi totam dolor.`,
-    },
-    {
-      title: "Something That I am doing right now",
-      tag: "Doing",
-      week: 1,
-      description: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta deleniti
-    porro iusto autem, expedita neque numquam nam sint repellendus corporis?
-    Atque, iste amet reprehenderit odio cupiditate corrupti sequi totam dolor.`,
-    },
-    {
-      title: "Something I totally wont do",
-      tag: "Denied",
-      week: 2,
-      description: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta deleniti
-    porro iusto autem, expedita neque numquam nam sint repellendus corporis?
-    Atque, iste amet reprehenderit odio cupiditate corrupti sequi totam dolor.`,
-    },
-    {
-      title: "Something that I have done",
-      tag: "Completed",
-      week: 4,
-      description: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta deleniti
-    porro iusto autem, expedita neque numquam nam sint repellendus corporis?
-    Atque, iste amet reprehenderit odio cupiditate corrupti sequi totam dolor.`,
-    },
-  ];
-  
-  import { fly, fade } from "svelte/transition";
-  import { quintOut, backIn } from "svelte/easing";
+  export let tasks;
+  export let name = "Portfolio";
+  export let n_tasks = 10;
+
+  import { slide } from "svelte/transition";
+  import { quintOut } from "svelte/easing";
   import ContextMenu from "./ContextMenu.svelte";
+  import LucideIcon from "./LucideIcon.svelte";
   import Task from "./Task.svelte";
-  let name = "Portfolio";
-  let n_tasks = 10;
+
   let expanded = false;
 
-  function handleThing(event){console.log(event.detail.thing)}
+  function handleThing(event) {
+    console.log(event.detail.thing);
+  }
 </script>
 
-<div class="folder">
+<div class="folder" class:toggled={expanded}>
   <div class="details" class:expanded>
     <div class="summary" on:click={() => (expanded = !expanded)}>
       <div class="logo">
@@ -125,26 +87,17 @@ let menuItems = [
     </div>
   </div>
   {#if expanded}
-    {#each tasks as task, i}
-      <div
-        in:fly={{
-          delay: 100 * i,
-          x: -200,
-          duration: 500,
-          opacity: 0,
-          easing: quintOut,
-        }}
-        out:fly={{
-          delay: (n_tasks - i) * 20,
-          x: -200,
-          duration: 200,
-          opacity: 0,
-          easing: quintOut,
-        }}
-      >
-        <Task {...task} />
+    <ul transition:slide={{ duration: 170 * tasks.length, easing: quintOut }}>
+      {#each tasks as task, i}
+        <li><Task {...task} /></li>
+      {/each}
+
+      <div style="display:flex; align-items:center; justify-content:center;">
+        <div class="close" on:click={() => (expanded = false)}>
+          <LucideIcon name={"chevron up"} />
+        </div>
       </div>
-    {/each}
+    </ul>
   {/if}
 </div>
 
@@ -155,6 +108,12 @@ let menuItems = [
     border-radius: 10px;
     overflow: hidden;
     width: clamp(300px, 450px, 450px);
+    margin-bottom: 1rem;
+  }
+  .folder:hover {
+    box-shadow: var(--long-stat-shadow);
+  }
+  .toggled {
     box-shadow: var(--long-stat-shadow);
   }
   .details {
@@ -164,6 +123,12 @@ let menuItems = [
     align-items: top;
     padding: 1rem;
     border: none;
+  }
+
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
   }
 
   .expanded {
@@ -197,5 +162,20 @@ let menuItems = [
   .context-menu {
     cursor: pointer;
     fill: var(--clr-gray-deep);
+  }
+
+  .close {
+    cursor: pointer;
+    background-color: var(--clr-background);
+    width: 2.5rem;
+    height: 2.5rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    margin: 1.7rem;
+  }
+
+  .close:hover {
+    background-color: var(--clr-gray);
   }
 </style>
