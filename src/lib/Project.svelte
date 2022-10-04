@@ -30,7 +30,7 @@
   export let name = "Portfolio";
   export let n_tasks = 10;
 
-  import { slide } from "svelte/transition";
+  import { slide, fly } from "svelte/transition";
   import { quintOut } from "svelte/easing";
   import ContextMenu from "./ContextMenu.svelte";
   import LucideIcon from "./LucideIcon.svelte";
@@ -89,7 +89,17 @@
   {#if expanded}
     <ul transition:slide={{ duration: 170 * tasks.length, easing: quintOut }}>
       {#each tasks as task, i}
-        <li><Task {...task} /></li>
+        <li
+          in:fly={{
+            delay: 50 * i,
+            x: -200,
+            opacity: 0,
+            duration: 500,
+            easing: quintOut,
+          }}
+        >
+          <Task {...task} />
+        </li>
       {/each}
 
       <div style="display:flex; align-items:center; justify-content:center;">

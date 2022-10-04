@@ -14,6 +14,7 @@
     ChevronDown,
     Plus,
     CheckSquare,
+    User,
   } from "lucide-svelte";
   export let name;
 </script>
@@ -46,6 +47,8 @@
   <svelte:component this={Plus} {...$$props} />
 {:else if name === "check square"}
   <svelte:component this={CheckSquare} {...$$props} />
+{:else if name === "user"}
+  <svelte:component this={User} {...$$props} />
 {:else}
   <svelte:component this={Square} color={"rgba(0,0,0,0)"} />
 {/if}

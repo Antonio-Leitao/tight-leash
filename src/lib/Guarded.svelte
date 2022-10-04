@@ -21,6 +21,7 @@
       tasks.push(doc.data());
     });
   });
+  console.log(tasks.length);
 </script>
 
 <h1>
@@ -31,7 +32,7 @@
   <LucideIcon name={"plus"} />
 </div>
 {#each projects as project}
-  <Project name={project} {tasks} />
+  <Project name={project} {tasks} n_tasks={tasks.length}/>
 {/each}
 
 <style>
