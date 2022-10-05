@@ -44,6 +44,7 @@
     dispatch("doThing", {
       thing: thing,
     });
+    showMenu = false;
   }
 </script>
 

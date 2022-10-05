@@ -5,8 +5,13 @@
   let modal;
   let value;
 
+  import { createEventDispatcher } from "svelte";
+  const dispatch = createEventDispatcher();
+
   function submit() {
-    console.log(value);
+    dispatch("new_project", {
+      title: value,
+    });
     modal.toggle();
     value = "";
   }
@@ -17,7 +22,7 @@
 </div>
 
 <Modal bind:this={modal}>
-  <h2>Insert Project Name</h2>
+  <h2>New project name</h2>
   <form on:submit|preventDefault={submit}>
     <input
       placeholder="Beatles lost album ideas"

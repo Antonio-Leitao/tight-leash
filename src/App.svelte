@@ -40,7 +40,7 @@
     margin-right: calc(100vw - 100%);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     left: 65vw;
   }
 

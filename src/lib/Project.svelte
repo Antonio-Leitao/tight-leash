@@ -30,13 +30,13 @@
   export let tasks;
   export let name = "Portfolio";
   export let n_tasks = 10;
+  export let completed_tasks = 2;
 
   import { slide, fly } from "svelte/transition";
   import { quintOut } from "svelte/easing";
   import ContextMenu from "./ContextMenu.svelte";
   import LucideIcon from "./LucideIcon.svelte";
   import Task from "./Task.svelte";
-  import Button from "./Button.svelte";
 
   import Modal from "./Modal.svelte";
   let task_title = "";
@@ -45,14 +45,20 @@
   let modal;
   let inputRef;
 
+  import { createEventDispatcher } from "svelte";
+  const dispatch = createEventDispatcher();
+
   const switchFocus = () => {
     inputRef.focus();
   };
 
-  function submit(event) {
-    console.log(event.key);
+  function addTask(event) {
     if (event.key === "Enter") {
-      console.log(task_title);
+      dispatch("new_task", {
+        title: task_title,
+        description: task_description,
+        tag: task_tag,
+      });
       modal.toggle();
       task_title = "";
       task_description = "";
@@ -66,7 +72,26 @@
     if (event.detail.thing === "Add Task") {
       modal.toggle();
     }
-    console.log(event.detail.thing);
+    if (event.detail.thing === "Move Up") {
+      dispatch("move_up", {
+        project: name,
+      });
+    }
+    if (event.detail.thing === "Move Down") {
+      dispatch("move_down", {
+        project: name,
+      });
+    }
+    if (event.detail.thing === "Clear Completed") {
+      dispatch("clear_completed", {
+        project: name,
+      });
+    }
+    if (event.detail.thing === "Delete Project") {
+      dispatch("delete_project", {
+        project: name,
+      });
+    }
   }
 </script>
 
@@ -78,25 +103,38 @@
   <div class="details" class:expanded>
     <div class="summary" on:click={() => (expanded = !expanded)}>
       <div class="logo">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path
-            d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"
-          />
-        </svg>
+        {#if !expanded}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"
+            />
+          </svg>
+          <div class="circle">{n_tasks}</div>
+        {:else}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 576 512"
+            fill="currentColor"
+            stroke="currentColor"
+            ><path
+              d="M88.7 223.8L0 375.8V96C0 60.7 28.7 32 64 32H181.5c17 0 33.3 6.7 45.3 18.7l26.5 26.5c12 12 28.3 18.7 45.3 18.7H416c35.3 0 64 28.7 64 64v32H144c-22.8 0-43.8 12.1-55.3 31.8zm27.6 16.1C122.1 230 132.6 224 144 224H544c11.5 0 22 6.1 27.7 16.1s5.7 22.2-.1 32.1l-112 192C453.9 474 443.4 480 432 480H32c-11.5 0-22-6.1-27.7-16.1s-5.7-22.2 .1-32.1l112-192z"
+            /></svg
+          >
+        {/if}
       </div>
       <div class="name">
         <div class="title">{name}</div>
-        <div class="description">Number of tasks: {n_tasks}</div>
+        <div class="description">
+          Completed tasks: {completed_tasks}/{n_tasks}
+        </div>
       </div>
     </div>
     <div class="context-menu">
@@ -142,8 +180,8 @@
 </div>
 
 <Modal bind:this={modal}>
-  <div on:keydown={submit}>
-    <h2>New Task</h2>
+  <div on:keydown={addTask}>
+    <h2>New task</h2>
     <div class="form" style="--user-color:var(--clr-{user_color}">
       <input placeholder="title" bind:value={task_title} />
       <textarea
@@ -153,7 +191,7 @@
       />
 
       <div class="tags">
-        {#each ["Pending", "Approved", "Doing", "Denied", "Complete"] as tag_name}
+        {#each ["Pending", "Approved", "Doing", "Denied", "Completed"] as tag_name}
           <div
             class="tag {tag_name}"
             class:selected={task_tag === tag_name}
@@ -203,10 +241,23 @@
   }
 
   .logo {
-    display: flex;
-    align-items: center;
+    display: grid;
+    place-items: center;
     color: var(--user-color);
-    margin-right: 0.5rem;
+    margin-right: 1rem;
+  }
+
+  .circle {
+    position: absolute;
+    color: var(--clr-background);
+    transform: translateY(0.1rem);
+    font-size: 0.8rem;
+    text-align: center;
+  }
+
+  svg {
+    width: 2rem;
+    transition: all 0.2s ease-out;
   }
 
   .summary {
@@ -305,7 +356,7 @@
   .tag.Denied {
     --tag-color: var(--clr-red);
   }
-  .tag.Complete {
+  .tag.Completed {
     --tag-color: var(--clr-green);
   }
   .tag:hover,
