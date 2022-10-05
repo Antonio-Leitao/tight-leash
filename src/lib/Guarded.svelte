@@ -50,22 +50,17 @@
     tasks = fbTasks;
   });
 
-  function addTask(proj) {
-    async function logTask(event) {
-      let task = {
-        title: event.detail.title,
-        description: event.detail.description,
-        tag: event.detail.tag,
-        week: 1, //fix this!
-        project: proj,
-        updated: params.name,
-      };
-      await setDoc(doc(tasksRef), task);
-
+  async function addTask(event) {
+    let task = {
+      title: event.detail.title,
+      description: event.detail.description,
+      tag: event.detail.tag,
+      week: 1, //fix this!
+      project: event.detail.project,
+      updated: params.name,
       //add timestamp
-      //add user
-    }
-    return logTask;
+    };
+    await setDoc(doc(tasksRef), task);
   }
 
   async function cleanProject(project) {
@@ -73,7 +68,18 @@
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       deleteDoc(doc.ref);
-      console.log(doc.id, " => ", doc.data());
+    });
+  }
+
+  async function clearCompleted(event) {
+    const q = query(
+      tasksRef,
+      where("project", "==", event.detail.project),
+      where("tag", "==", "Completed")
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      deleteDoc(doc.ref);
     });
   }
 </script>
@@ -85,9 +91,12 @@
     {user_color}
     name={project}
     tasks={tasks.filter((task) => task.project === project)}
-    n_tasks={10}
-    completed_tasks={1}
-    on:new_task={addTask(project)}
+    n_tasks={tasks.filter((task) => task.project === project).length}
+    completed_tasks={tasks.filter(
+      (task) => task.tag === "Completed" && task.project === project
+    ).length}
+    on:new_task={addTask}
     on:delete_project={deleteProject}
+    on:clear_completed={clearCompleted}
   />
 {/each}

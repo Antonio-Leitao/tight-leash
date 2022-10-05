@@ -58,6 +58,7 @@
         title: task_title,
         description: task_description,
         tag: task_tag,
+        project: name,
       });
       modal.toggle();
       task_title = "";
@@ -166,7 +167,13 @@
             easing: quintOut,
           }}
         >
-          <Task {...task} />
+          <Task
+            title={task.title}
+            updated={task.updated}
+            description={task.description}
+            tag={task.tag}
+            week={task.week}
+          />
         </li>
       {/each}
 

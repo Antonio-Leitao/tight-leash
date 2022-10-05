@@ -1,6 +1,8 @@
 <script>
   import { adaptiveGrowth } from "./scripts/adaptive_growth.js";
-  export let value = "world";
+
+  export let value;
+
   let editable = false;
   import { clickOutside } from "./scripts/click_outside.js";
 
@@ -19,9 +21,16 @@
       .replace(ref_regex, "<a href=$2>$1</a>");
     return toHTML.trim(); // using trim method to remove whitespace
   };
+
+  import { onMount } from "svelte";
+  $: htmlvalue = markdownParser(value);
+  onMount(() => {
+    htmlvalue = markdownParser(value);
+  });
+
   function submit() {
     editable = false;
-    value = markdownParser(value);
+    // value = markdownParser(value); //!!
     console.log(value);
   }
 
@@ -44,7 +53,7 @@
     />
   {:else}
     <div>
-      {@html value}
+      {@html htmlvalue}
     </div>
   {/if}
 </div>
