@@ -1,12 +1,15 @@
 <script>
+  import AddButton from "./AddButton.svelte";
   export let params;
   import Project from "./Project.svelte";
-  import LucideIcon from "./LucideIcon.svelte";
-  import { db } from "./firebase_config.js";
 
+  let user_color = "purple";
+
+  //FIREBASE
+  import { db } from "./firebase_config.js";
+  import { collection, doc, onSnapshot } from "firebase/firestore";
   //get all projects
   let projects = [];
-  import { collection, doc, onSnapshot } from "firebase/firestore";
   const unsub = onSnapshot(doc(db, "users", params.name), (doc) => {
     projects = doc.data().projects;
   });
@@ -22,32 +25,10 @@
     });
   });
   console.log(tasks.length);
+  //FIREBASE
 </script>
 
-<h1>
-  This is the {params.name} blog!
-</h1>
-
-<div class="add">
-  <LucideIcon name={"plus"} />
-</div>
+<AddButton {user_color} />
 {#each projects as project}
-  <Project name={project} {tasks} n_tasks={tasks.length}/>
+  <Project {user_color} name={project} {tasks} n_tasks={tasks.length} />
 {/each}
-
-<style>
-  .add {
-    cursor: pointer;
-    background-color: var(--clr-background);
-    width: 2.5rem;
-    height: 2.5rem;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    margin: 1.7rem;
-  }
-
-  .add:hover {
-    background-color: var(--clr-gray);
-  }
-</style>

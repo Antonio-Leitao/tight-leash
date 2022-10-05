@@ -1,5 +1,7 @@
 <script>
   import { link } from "svelte-spa-router";
+  import Weeklendar from "./Weeklendar.svelte";
+  let user = "Giovanni";
   let researchers = [
     {
       first_name: "Marco",
@@ -49,6 +51,10 @@
     </div>
   {/each}
 </div>
+
+{#if user === "Giovanni"}
+  <Weeklendar {researchers}/>
+{/if}
 
 <style>
   .researchers {

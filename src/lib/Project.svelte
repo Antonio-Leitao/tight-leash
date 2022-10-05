@@ -1,4 +1,5 @@
 <script>
+  export let user_color = "orange";
   let menuItems = [
     {
       name: "plus",
@@ -35,15 +36,45 @@
   import ContextMenu from "./ContextMenu.svelte";
   import LucideIcon from "./LucideIcon.svelte";
   import Task from "./Task.svelte";
+  import Button from "./Button.svelte";
+
+  import Modal from "./Modal.svelte";
+  let task_title = "";
+  let task_description = "";
+  let task_tag = "Pending";
+  let modal;
+  let inputRef;
+
+  const switchFocus = () => {
+    inputRef.focus();
+  };
+
+  function submit(event) {
+    console.log(event.key);
+    if (event.key === "Enter") {
+      console.log(task_title);
+      modal.toggle();
+      task_title = "";
+      task_description = "";
+      task_tag = "Pending";
+    }
+  }
 
   let expanded = false;
 
   function handleThing(event) {
+    if (event.detail.thing === "Add Task") {
+      modal.toggle();
+    }
     console.log(event.detail.thing);
   }
 </script>
 
-<div class="folder" class:toggled={expanded}>
+<div
+  class="folder"
+  style="--user-color:var(--clr-{user_color})"
+  class:toggled={expanded}
+>
   <div class="details" class:expanded>
     <div class="summary" on:click={() => (expanded = !expanded)}>
       <div class="logo">
@@ -57,7 +88,6 @@
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
-          class="feather feather-folder"
         >
           <path
             d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"
@@ -111,6 +141,33 @@
   {/if}
 </div>
 
+<Modal bind:this={modal}>
+  <div on:keydown={submit}>
+    <h2>New Task</h2>
+    <div class="form" style="--user-color:var(--clr-{user_color}">
+      <input placeholder="title" bind:value={task_title} />
+      <textarea
+        placeholder="Description"
+        bind:this={inputRef}
+        bind:value={task_description}
+      />
+
+      <div class="tags">
+        {#each ["Pending", "Approved", "Doing", "Denied", "Complete"] as tag_name}
+          <div
+            class="tag {tag_name}"
+            class:selected={task_tag === tag_name}
+            on:click={() => (task_tag = tag_name)}
+            on:click={switchFocus}
+          >
+            {tag_name}
+          </div>
+        {/each}
+      </div>
+    </div>
+  </div>
+</Modal>
+
 <style>
   .folder {
     cursor: pointer;
@@ -121,10 +178,10 @@
     margin-bottom: 1rem;
   }
   .folder:hover {
-    box-shadow: var(--long-stat-shadow);
+    box-shadow: var(--hover-shadow);
   }
   .toggled {
-    box-shadow: var(--long-stat-shadow);
+    box-shadow: var(--hover-shadow);
   }
   .details {
     display: flex;
@@ -148,8 +205,7 @@
   .logo {
     display: flex;
     align-items: center;
-    color: var(--clr-blue);
-    grid-area: logo;
+    color: var(--user-color);
     margin-right: 0.5rem;
   }
 
@@ -187,5 +243,92 @@
 
   .close:hover {
     background-color: var(--clr-gray);
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+  }
+  input {
+    line-height: 2.4rem;
+    outline: none;
+    font-size: 15px;
+    color: var(--clr-text1);
+    border-radius: 0.4rem;
+    border: 2px solid var(--clr-gray);
+    margin-bottom: 0.5rem;
+  }
+  input:focus {
+    outline: none;
+    border-radius: 0.4rem;
+    border: 2px solid var(--user-color);
+  }
+  h2 {
+    color: var(--clr-text1);
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0;
+    margin-bottom: 1rem;
+  }
+  .tags {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tag {
+    border-radius: 0.3rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.05rem;
+    margin-left: 0.1rem;
+    margin-right: 0.1rem;
+    padding: 0.1rem 0.2rem 0.1rem 0.2rem;
+    color: var(--clr-background);
+    background-color: var(--clr-gray-deep);
+    margin-bottom: 0.5rem;
+  }
+
+  .tag.Pending {
+    --tag-color: var(--clr-blue);
+  }
+
+  .tag.Approved {
+    --tag-color: var(--clr-purple);
+  }
+
+  .tag.Doing {
+    --tag-color: var(--clr-orange);
+  }
+
+  .tag.Denied {
+    --tag-color: var(--clr-red);
+  }
+  .tag.Complete {
+    --tag-color: var(--clr-green);
+  }
+  .tag:hover,
+  .tag.selected {
+    background-color: var(--tag-color);
+  }
+
+  textarea {
+    background: none;
+    font-weight: inherit;
+    text-align: inherit;
+    box-shadow: none;
+    margin: 0 0 0.5rem 0;
+    padding: 0;
+    width: 100%;
+    resize: none;
+    font-size: 0.75rem;
+    height: 5rem;
+    border-radius: 0.4rem;
+    color: var(--clr-text1);
+    border: 2px solid var(--clr-gray);
+  }
+  textarea:focus {
+    outline: 2px solid var(--user-color);
   }
 </style>

@@ -23,7 +23,19 @@
   --long-stat-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
   --short-stat-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  --hover-shadow: 0 1px 5px rgba(0, 0, 0, 0.1), 2px 3px 12px rgba(0, 0, 0, 0.2);
 
   background-color: var(--clr-background-deep);
   color: var(--clr-text1);
+}
+
+.dark {
+  --clr-red: #ff2850;
+  --clr-orange: #ff9600;
+  --clr-yellow: #ffb30f;
+  --clr-green: #3ec949;
+  --clr-cyan: #4db7dd;
+  --clr-blue: #0076f0;
+  --clr-background-deep: #1e2235;
+  --clr-background: #2b3044;
 }

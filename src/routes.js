@@ -4,6 +4,7 @@ import Error from "./lib/Error.svelte";
 import Dashboard from "./lib/Dashboard.svelte";
 import Loading from "./lib/Loading.svelte";
 import Denied from "./lib/Denied.svelte";
+import Button from "./lib/Button.svelte";
 
 const user = "Antonio";
 
@@ -24,5 +25,6 @@ export const routes = {
     loadingComponent: Loading,
   }),
   "/denied": Denied,
+  "/button": Button,
   "/*": Error,
 };

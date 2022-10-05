@@ -15,6 +15,7 @@
     Plus,
     CheckSquare,
     User,
+    CornerUpLeft,
   } from "lucide-svelte";
   export let name;
 </script>
@@ -49,6 +50,8 @@
   <svelte:component this={CheckSquare} {...$$props} />
 {:else if name === "user"}
   <svelte:component this={User} {...$$props} />
+{:else if name === "corner up left"}
+  <svelte:component this={CornerUpLeft} {...$$props} />
 {:else}
   <svelte:component this={Square} color={"rgba(0,0,0,0)"} />
 {/if}

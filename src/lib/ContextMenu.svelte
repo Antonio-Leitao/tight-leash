@@ -25,7 +25,6 @@
       x: e.clientX,
       y: e.clientY + scroll_amount,
     };
-    console.log(pos);
     if (browser.h - pos.y < menu.h) pos.y = pos.y - menu.h;
     if (browser.w - pos.x < menu.w) pos.x = pos.x - menu.w;
   }
