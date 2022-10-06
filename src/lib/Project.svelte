@@ -33,6 +33,7 @@
   export let completed_tasks = 2;
 
   import { slide, fly } from "svelte/transition";
+  import { flip } from "svelte/animate";
   import { quintOut } from "svelte/easing";
   import ContextMenu from "./ContextMenu.svelte";
   import LucideIcon from "./LucideIcon.svelte";

@@ -30,8 +30,7 @@
 
   function submit() {
     editable = false;
-    // value = markdownParser(value); //!!
-    console.log(value);
+    //this will require dispatch!
   }
 
   function handleKeydown(event) {
