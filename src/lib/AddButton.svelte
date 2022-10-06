@@ -2,6 +2,7 @@
   export let user_color = "orange";
   import LucideIcon from "./LucideIcon.svelte";
   import Modal from "./Modal.svelte";
+  import Input from "./Input.svelte";
   let modal;
   let value;
 
@@ -22,15 +23,15 @@
 </div>
 
 <Modal bind:this={modal}>
-  <h2>New project name</h2>
-  <form on:submit|preventDefault={submit}>
-    <input
-      placeholder="Beatles lost album ideas"
-      bind:value
-      on:blur={() => (value = "")}
-      style="--user-color:var(--clr-{user_color});"
-    />
-  </form>
+  <div
+    on:blur={() => (value = "")}
+    style="--user-color:var(--clr-{user_color});"
+  >
+    <h2>New project</h2>
+    <form on:submit|preventDefault={submit}>
+      <Input type="one-line" label="Project name" bind:value />
+    </form>
+  </div>
 </Modal>
 
 <style>
@@ -52,20 +53,7 @@
     display: flex;
     align-items: center;
   }
-  input {
-    line-height: 2.4rem;
-    outline: none;
-    font-size: 15px;
-    color: var(--clr-text1);
-    border-radius: 0.4rem;
-    border: 2px solid var(--clr-gray);
-    width: 90%;
-  }
-  input:focus {
-    outline: none;
-    border-radius: 0.4rem;
-    border: 2px solid var(--user-color);
-  }
+
   h2 {
     color: var(--clr-text1);
     font-size: 20px;

@@ -75,11 +75,12 @@
       on:update={update}
     />
   </div>
+  <hr />
 </div>
 
 <style>
   .task {
-    padding: 1.3rem;
+    padding: 0.8rem 1.3rem 0rem 1.3rem;
   }
   .header {
     display: flex;
@@ -149,5 +150,10 @@
 
   .task:not(:last-child) {
     border-bottom: 1px solid var(--clr-background-deeper);
+  }
+  hr {
+    border: none;
+    border-bottom: 1px solid var(--clr-gray);
+    margin: 1.3rem 3rem 0rem 3rem;
   }
 </style>

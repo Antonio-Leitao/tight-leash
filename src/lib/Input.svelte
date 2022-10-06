@@ -47,6 +47,7 @@
     border-radius: 0.4rem;
     border: 2px solid var(--clr-gray);
     margin-bottom: 0.5rem;
+    padding: 0.5rem;
   }
   input:focus {
     outline: none;
