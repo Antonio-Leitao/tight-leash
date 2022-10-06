@@ -71,6 +71,25 @@
     });
   }
 
+  async function renameProject(event) {
+    let index = projects.indexOf(event.detail.project);
+    projects[index] = event.detail.new_name;
+
+    //update projects
+    await updateDoc(projectsRef, {
+      projects: projects,
+    });
+
+    //update tasks
+    const q = query(tasksRef, where("project", "==", event.detail.project));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      updateDoc(doc.ref, {
+        project: event.detail.new_name,
+      });
+    });
+  }
+
   async function deleteProject(event) {
     cleanProject(event.detail.project);
     await updateDoc(projectsRef, {
@@ -188,6 +207,7 @@
       on:clear_completed={clearCompleted}
       on:move_up={moveUp}
       on:move_down={moveDown}
+      on:rename={renameProject}
       on:update={updateTask}
     />
   </div>

@@ -1,38 +1,39 @@
 <script>
   import { link } from "svelte-spa-router";
   import Weeklendar from "./Weeklendar.svelte";
+  import { db } from "./firebase_config.js";
+  import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
   let user = "Giovanni";
-  let researchers = [
-    {
-      first_name: "Marco",
-      last_name: "Nurisso",
-      alias: "Marco",
-      image:
-        "https://italian.news24viral.com/wp-content/uploads/2021/05/Dettagli-strazianti-su-Danny-DeVito.jpg",
-      color: "orange",
-    },
-    {
-      first_name: "António",
-      last_name: "Leitão",
-      alias: "Antonio",
-      image: "static/avatar_leitao.png",
-      color: "blue",
-    },
-    {
-      first_name: "Simone",
-      last_name: "Poetto",
-      alias: "Simone",
-      image: "static/Simone-poetto.jpg",
-      color: "green",
-    },
-    {
-      first_name: "Maxime",
-      last_name: "Lucas",
-      alias: "Maxime",
-      image: "static/badder_max.jpg",
-      color: "red",
-    },
-  ];
+
+  let researchers = [];
+  const tasksRef = collection(db, `users/`);
+  const unsubscribe = onSnapshot(
+    query(tasksRef, orderBy("seniority", "asc")),
+    (querySnapshot) => {
+      let fbRes = [];
+      querySnapshot.forEach((doc) => {
+        fbRes = [doc.data(), ...fbRes];
+      });
+      researchers = fbRes;
+    }
+  );
+
+  //
+  //   first_name: "Marco",
+  //   last_name: "Nurisso",
+  //   alias: "Marco",
+  //   image:
+  //     "https://italian.news24viral.com/wp-content/uploads/2021/05/Dettagli-strazianti-su-Danny-DeVito.jpg",
+  //   color: "orange",
+  // },
+
+  // {
+  //   first_name: "Simone",
+  //   last_name: "Poetto",
+  //   alias: "Simone",
+  //   image: "static/Simone-poetto.jpg",
+  //   color: "green",
+  // },
 </script>
 
 <div class="researchers">
@@ -53,7 +54,7 @@
 </div>
 
 {#if user === "Giovanni"}
-  <Weeklendar {researchers}/>
+  <Weeklendar {researchers} />
 {/if}
 
 <style>

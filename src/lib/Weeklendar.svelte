@@ -1,5 +1,6 @@
 <script>
   export let researchers;
+  import ResearcherSummary from "./ResearcherSummary.svelte";
 </script>
 
 <span>
@@ -9,25 +10,7 @@
 
 <div class="work">
   {#each researchers as researcher}
-    <div class="task-row" style="--clr-border:var(--clr-{researcher.color});">
-      <div
-        class="person"
-        style="--clr-border:var(--clr-{researcher.color});background-image: url({researcher.image});"
-      />
-      <div class="tasks">
-        {#each { length: 2 } as task}
-          <div class="task">
-            <h3>This is the summary of the task.</h3>
-            <p>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              Voluptatem, reprehenderit. Rem ex voluptatum vitae quibusdam nobis
-              natus recusandae, eveniet, a ut quas libero illo laboriosam
-              laudantium dolores consequuntur iure voluptas.
-            </p>
-          </div>
-        {/each}
-      </div>
-    </div>
+    <ResearcherSummary {researcher} />
   {/each}
 </div>
 
@@ -35,62 +18,6 @@
   .work {
     display: flex;
     flex-direction: column-reverse;
-  }
-  .task-row {
-    display: flex;
-    width: fit-content;
-    height: fit-content;
-    align-items: flex-start;
-    justify-content: center;
-  }
-  .person {
-    border: 0.3rem solid var(--clr-border);
-    border-radius: 50%;
-    margin-bottom: 1rem;
-    padding: 1rem;
-    display: flex;
-    align-items: center;
-    color: var(--clr-text1);
-    height: 4rem;
-    width: 4rem;
-    background-position: center;
-    background-repeat: no-repeat; /* Do not repeat the image */
-    background-size: 130px;
-    margin: 0.2rem;
-  }
-  .tasks {
-    margin-left: 1rem;
-    margin-right: 1rem;
-    width: 25rem;
-    height: fit-content;
-  }
-  .task {
-    padding: 0.8rem;
-    background-color: var(--clr-border);
-    border-radius: 0.5rem;
-    margin-top: 0.1rem;
-  }
-
-  h3 {
-    margin: 0;
-    color: #000;
-    font-size: 1rem;
-    font-weight: 500;
-  }
-  p {
-    color: #000;
-    font-size: 0.75rem;
-    --lh: 1rem;
-    line-height: var(--lh);
-    margin: 0;
-    margin-top: 0.3rem;
-    max-height: calc(3 * var(--lh));
-    -webkit-box-orient: vertical;
-    display: block;
-    display: -webkit-box;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -webkit-line-clamp: 3;
   }
 
   span {

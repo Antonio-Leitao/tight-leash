@@ -14,6 +14,10 @@
       displayText: "Move Down",
     },
     {
+      name: "edit",
+      displayText: "Rename",
+    },
+    {
       name: "check square",
       displayText: "Clear Completed",
     },
@@ -33,13 +37,13 @@
   export let completed_tasks = 2;
   let lens;
 
-  import { slide, fly } from "svelte/transition";
   import { flip } from "svelte/animate";
   import { quintOut } from "svelte/easing";
+  import { fly, slide } from "svelte/transition";
   import ContextMenu from "./ContextMenu.svelte";
+  import Input from "./Input.svelte";
   import LucideIcon from "./LucideIcon.svelte";
   import Task from "./Task.svelte";
-  import Input from "./Input.svelte";
 
   import Modal from "./Modal.svelte";
   let task_title = "";
@@ -47,6 +51,7 @@
   let task_tag = "Pending";
   let task_week = 2;
   let modal;
+  let name_modal;
 
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
@@ -79,27 +84,25 @@
   function handleProjectAction(event) {
     if (event.detail.value === "Add Task") {
       modal.toggle();
+      return;
     }
-    if (event.detail.value === "Move Up") {
-      dispatch("move_up", {
-        project: name,
-      });
+    if (event.detail.value === "Rename") {
+      name_modal.toggle();
+      return;
     }
-    if (event.detail.value === "Move Down") {
-      dispatch("move_down", {
-        project: name,
-      });
-    }
-    if (event.detail.value === "Clear Completed") {
-      dispatch("clear_completed", {
-        project: name,
-      });
-    }
-    if (event.detail.value === "Delete Project") {
-      dispatch("delete_project", {
-        project: name,
-      });
-    }
+    dispatch(event.detail.value.replace(" ", "_").toLowerCase(), {
+      project: name,
+    });
+  }
+
+  let new_name = "";
+  function submitName() {
+    name_modal.toggle();
+    dispatch("rename", {
+      project: name,
+      new_name: new_name,
+    });
+    name = new_name;
   }
 </script>
 
@@ -170,7 +173,7 @@
     <ul transition:slide={{ duration: 170 * tasks.length, easing: quintOut }}>
       {#each tasks as task, i (task.id)}
         <li
-          animate:flip={{ duration: 300 }}
+          animate:flip={{ duration: 1200, easing: quintOut }}
           in:fly={{
             delay: 50 * i,
             x: -200,
@@ -237,6 +240,18 @@
         <div class="description">weeks</div>
       </div>
     </div>
+  </div>
+</Modal>
+
+<Modal bind:this={name_modal}>
+  <div
+    on:blur={() => (new_name = "")}
+    style="--user-color:var(--clr-{user_color});"
+  >
+    <h2 style="margin:0; margin-bottom:1rem">{name}</h2>
+    <form on:submit|preventDefault={submitName}>
+      <Input type="one-line" label="New name" bind:value={new_name} />
+    </form>
   </div>
 </Modal>
 
@@ -323,7 +338,7 @@
     display: grid;
     place-items: center;
     border-radius: 50%;
-    margin: 1.7rem;
+    margin: 1rem;
   }
   .close:hover {
     background-color: var(--clr-gray);

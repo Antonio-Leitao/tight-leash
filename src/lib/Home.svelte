@@ -1,11 +1,11 @@
 <script>
-  import { replace } from "svelte-spa-router";
   import Button from "./Button.svelte";
+  import { LogIn } from "./firebase_config.js";
 </script>
 
 <span>
   <Button
-    clickFunction={() => replace("/researchers")}
+    clickFunction={LogIn}
     icon_name={"user"}
     text={"Sign in with Google"}
     white={true}
