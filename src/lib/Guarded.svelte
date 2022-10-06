@@ -48,8 +48,9 @@
   } from "firebase/firestore";
 
   //////////PROJECTS /////////////////
+  const userRef = doc(db, "users", params.name);
   let projects = [];
-  const unsub_projects = onSnapshot(doc(db, "users", params.name), (doc) => {
+  const unsub_projects = onSnapshot(userRef, (doc) => {
     projects = doc.data().projects;
   });
 
@@ -58,12 +59,11 @@
     let new_proj = event.detail.title;
     if (projects.includes(new_proj)) {
       new_proj =
-        prefixes[Math.floor(Math.random() * prefixes.length)] + new_proj;
+        new_proj + suffixes[Math.floor(Math.random() * prefixes.length)];
     }
-
     if (projects.includes(new_proj)) {
       new_proj =
-        new_proj + suffixes[Math.floor(Math.random() * prefixes.length)];
+        prefixes[Math.floor(Math.random() * prefixes.length)] + new_proj;
     }
 
     await updateDoc(projectsRef, {
@@ -82,11 +82,12 @@
   let tasks = [];
   const tasksRef = collection(db, `users/${params.name}/tasks`);
   const unsubscribe = onSnapshot(
-    query(tasksRef, orderBy("timestamp", "desc")),
+    query(tasksRef, orderBy("timestamp", "asc")),
     (querySnapshot) => {
       let fbTasks = [];
       querySnapshot.forEach((doc) => {
-        fbTasks.push(doc.data());
+        fbTasks = [{ id: doc.id, ...doc.data() }, ...fbTasks];
+        // fbTasks.push(doc.data());
       });
       tasks = fbTasks;
     }
@@ -97,7 +98,7 @@
       title: event.detail.title,
       description: event.detail.description,
       tag: event.detail.tag,
-      week: 1, //fix this!
+      week: event.detail.week, //fix this!
       project: event.detail.project,
       updated: params.name,
       timestamp: serverTimestamp(),
@@ -136,19 +137,26 @@
     arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
     return arr; // for testing
   }
-  function moveUp(event) {
+  async function moveUp(event) {
     let index = projects.indexOf(event.detail.project);
     if (index === 0) {
       return;
     }
     projects = array_move(projects, index, index - 1);
+    await updateDoc(userRef, {
+      projects: projects,
+    });
   }
-  function moveDown(event) {
+  async function moveDown(event) {
     let index = projects.indexOf(event.detail.project);
     if (index === projects.length) {
       return;
     }
+
     projects = array_move(projects, index, index + 1);
+    await updateDoc(userRef, {
+      projects: projects,
+    });
   }
 </script>
 

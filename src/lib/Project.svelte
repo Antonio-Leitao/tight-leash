@@ -31,6 +31,7 @@
   export let name = "Portfolio";
   export let n_tasks = 10;
   export let completed_tasks = 2;
+  let lens;
 
   import { slide, fly } from "svelte/transition";
   import { flip } from "svelte/animate";
@@ -38,33 +39,32 @@
   import ContextMenu from "./ContextMenu.svelte";
   import LucideIcon from "./LucideIcon.svelte";
   import Task from "./Task.svelte";
+  import Input from "./Input.svelte";
 
   import Modal from "./Modal.svelte";
   let task_title = "";
   let task_description = "";
   let task_tag = "Pending";
+  let task_week = 2;
   let modal;
-  let inputRef;
 
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
 
-  const switchFocus = () => {
-    inputRef.focus();
-  };
-
   function addTask(event) {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !event.shiftKey) {
       dispatch("new_task", {
         title: task_title,
         description: task_description,
         tag: task_tag,
         project: name,
+        week: task_week,
       });
-      modal.toggle();
       task_title = "";
       task_description = "";
       task_tag = "Pending";
+      task_week = 2;
+      modal.toggle();
     }
   }
 
@@ -158,8 +158,9 @@
   </div>
   {#if expanded}
     <ul transition:slide={{ duration: 170 * tasks.length, easing: quintOut }}>
-      {#each tasks as task, i}
+      {#each tasks as task, i (task.id)}
         <li
+          animate:flip={{ duration: 300 }}
           in:fly={{
             delay: 50 * i,
             x: -200,
@@ -188,27 +189,40 @@
 </div>
 
 <Modal bind:this={modal}>
-  <div on:keydown={addTask}>
+  <div on:keydown={addTask} style="--user-color:var(--clr-{user_color}">
     <h2>New task</h2>
-    <div class="form" style="--user-color:var(--clr-{user_color}">
-      <input placeholder="title" bind:value={task_title} />
-      <textarea
-        placeholder="Description"
-        bind:this={inputRef}
-        bind:value={task_description}
-      />
 
+    <div class="form">
+      <Input label="title" bind:value={task_title} type="one-line" />
+      <Input
+        bind:this={lens}
+        label="description"
+        bind:value={task_description}
+        type="area"
+      />
       <div class="tags">
         {#each ["Pending", "Approved", "Doing", "Denied", "Completed"] as tag_name}
           <div
             class="tag {tag_name}"
             class:selected={task_tag === tag_name}
             on:click={() => (task_tag = tag_name)}
-            on:click={switchFocus}
+            on:click={() => lens.focus()}
           >
             {tag_name}
           </div>
         {/each}
+      </div>
+      <div class="scope">
+        <div class="description">Select time frame for task:</div>
+        <div class="number">
+          <Input
+            type="number"
+            label="weeks"
+            bind:value={task_week}
+            on:week_touch={() => lens.focus()}
+          />
+        </div>
+        <div class="description">weeks</div>
       </div>
     </div>
   </div>
@@ -299,36 +313,23 @@
     border-radius: 50%;
     margin: 1.7rem;
   }
-
   .close:hover {
     background-color: var(--clr-gray);
   }
-
   .form {
     display: flex;
     flex-direction: column;
     align-items: left;
-  }
-  input {
-    line-height: 2.4rem;
-    outline: none;
-    font-size: 15px;
-    color: var(--clr-text1);
-    border-radius: 0.4rem;
-    border: 2px solid var(--clr-gray);
-    margin-bottom: 0.5rem;
-  }
-  input:focus {
-    outline: none;
-    border-radius: 0.4rem;
-    border: 2px solid var(--user-color);
   }
   h2 {
     color: var(--clr-text1);
     font-size: 20px;
     font-weight: 500;
     margin: 0;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .week {
+    width: 20%;
   }
   .tags {
     cursor: pointer;
@@ -372,22 +373,13 @@
     background-color: var(--tag-color);
   }
 
-  textarea {
-    background: none;
-    font-weight: inherit;
-    text-align: inherit;
-    box-shadow: none;
-    margin: 0 0 0.5rem 0;
-    padding: 0;
-    width: 100%;
-    resize: none;
-    font-size: 0.75rem;
-    height: 5rem;
-    border-radius: 0.4rem;
-    color: var(--clr-text1);
-    border: 2px solid var(--clr-gray);
+  .scope {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
   }
-  textarea:focus {
-    outline: 2px solid var(--user-color);
+  .number {
+    width: 30%;
   }
 </style>

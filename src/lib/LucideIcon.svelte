@@ -16,6 +16,7 @@
     CheckSquare,
     User,
     CornerUpLeft,
+    Minus,
   } from "lucide-svelte";
   export let name;
 </script>
@@ -46,6 +47,8 @@
   <svelte:component this={Octagon} {...$$props} />
 {:else if name === "plus"}
   <svelte:component this={Plus} {...$$props} />
+{:else if name === "minus"}
+  <svelte:component this={Minus} {...$$props} />
 {:else if name === "check square"}
   <svelte:component this={CheckSquare} {...$$props} />
 {:else if name === "user"}

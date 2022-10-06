@@ -24,7 +24,7 @@
       class="modal"
     >
       <button on:click={() => toggle()} class="x">❌</button>
-      <slot />
+      <div class="content"><slot /></div>
     </div>
   </div>
 {/if}
@@ -67,5 +67,8 @@
   }
   .x:hover {
     transform: scale(1.2);
+  }
+  .content {
+    margin-right: 0.8rem;
   }
 </style>
