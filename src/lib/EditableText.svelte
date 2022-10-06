@@ -1,10 +1,12 @@
 <script>
   import { adaptiveGrowth } from "./scripts/adaptive_growth.js";
-
+  export let field;
   export let value;
 
   let editable = false;
   import { clickOutside } from "./scripts/click_outside.js";
+  import { createEventDispatcher } from "svelte";
+  const dispatch = createEventDispatcher();
 
   const ref_regex = /^\[([\w\s\d]+)\]\(((?:\/|https?:\/\/)[\w\d./?=#]+)\)$/;
 
@@ -30,7 +32,10 @@
 
   function submit() {
     editable = false;
-    //this will require dispatch!
+    dispatch("update", {
+      field: field,
+      value: value,
+    });
   }
 
   function handleKeydown(event) {

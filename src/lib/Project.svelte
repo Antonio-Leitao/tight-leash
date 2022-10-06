@@ -51,6 +51,12 @@
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
 
+  function update(event) {
+    dispatch("update", {
+      ...event.detail,
+    });
+  }
+
   function addTask(event) {
     if (event.key === "Enter" && !event.shiftKey) {
       dispatch("new_task", {
@@ -70,26 +76,26 @@
 
   let expanded = false;
 
-  function handleThing(event) {
-    if (event.detail.thing === "Add Task") {
+  function handleProjectAction(event) {
+    if (event.detail.value === "Add Task") {
       modal.toggle();
     }
-    if (event.detail.thing === "Move Up") {
+    if (event.detail.value === "Move Up") {
       dispatch("move_up", {
         project: name,
       });
     }
-    if (event.detail.thing === "Move Down") {
+    if (event.detail.value === "Move Down") {
       dispatch("move_down", {
         project: name,
       });
     }
-    if (event.detail.thing === "Clear Completed") {
+    if (event.detail.value === "Clear Completed") {
       dispatch("clear_completed", {
         project: name,
       });
     }
-    if (event.detail.thing === "Delete Project") {
+    if (event.detail.value === "Delete Project") {
       dispatch("delete_project", {
         project: name,
       });
@@ -140,7 +146,11 @@
       </div>
     </div>
     <div class="context-menu">
-      <ContextMenu {menuItems} on:doThing={handleThing}>
+      <ContextMenu
+        {menuItems}
+        on:update={handleProjectAction}
+        field={"project_actions"}
+      >
         <div class="elipsis">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -175,6 +185,8 @@
             description={task.description}
             tag={task.tag}
             week={task.week}
+            id={task.id}
+            on:update={update}
           />
         </li>
       {/each}

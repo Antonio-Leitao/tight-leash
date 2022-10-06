@@ -4,6 +4,7 @@
   const dispatch = createEventDispatcher();
   export let menuItems;
   let scroll_amount;
+  export let field = "context_menu";
 
   import { clickOutside } from "./scripts/click_outside.js";
   // pos is cursor position when right click occur
@@ -40,9 +41,10 @@
     };
   }
 
-  function doThing(thing) {
-    dispatch("doThing", {
-      thing: thing,
+  function update(thing) {
+    dispatch("update", {
+      field: field,
+      value: thing,
     });
     showMenu = false;
   }
@@ -64,7 +66,7 @@
             <hr />
           {:else if item.color === undefined}
             <div
-              on:click={() => doThing(item.displayText)}
+              on:click={() => update(item.displayText)}
               class="list-item"
               style="--hover-color: var(--clr-text1);"
             >
@@ -73,7 +75,7 @@
             </div>
           {:else}
             <div
-              on:click={() => doThing(item.displayText)}
+              on:click={() => update(item.displayText)}
               class="list-item"
               style="--hover-color:{item.color}"
             >

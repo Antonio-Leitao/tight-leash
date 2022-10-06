@@ -1,12 +1,16 @@
 <script>
   import EditableText from "./EditableText.svelte";
   import ContextMenu from "./ContextMenu.svelte";
+  import { createEventDispatcher } from "svelte";
+  const dispatch = createEventDispatcher();
+
   let dh;
   export let tag;
   export let title;
   export let description;
   export let week;
   export let updated;
+  export let id;
 
   let menuItems = [
     { name: "circle", displayText: "Pending", color: "blue" },
@@ -15,10 +19,6 @@
     { name: "octagon", displayText: "Denied", color: "red" },
     { name: "hexagon", displayText: "Completed", color: "green" },
   ];
-
-  function changeTag(event) {
-    console.log(event.detail.thing);
-  }
 
   function translateWeek(week) {
     if (week < 0) {
@@ -36,11 +36,8 @@
     return `In ${week} weeks`;
   }
 
-  function submit(field) {
-    return ({ detail: newValue }) => {
-      // IRL: POST value to server here
-      console.log(`updated ${field}, new value is: "${newValue}"`);
-    };
+  function update(event) {
+    dispatch("update", { id: id, ...event.detail });
   }
 </script>
 
@@ -48,13 +45,20 @@
   <div class="header">
     <div class="title-updated">
       <div class="title">
-        <EditableText value={title} />
+        <EditableText field="title" bind:value={title} on:update={update} />
       </div>
       <div class="updated">Last updated by {updated}</div>
     </div>
     <div class="tags-date">
       <div class="tags">
-        <ContextMenu {menuItems} on:doThing{changeTag}>
+        <ContextMenu
+          field={"tag"}
+          {menuItems}
+          on:update={(event) => {
+            update(event);
+            tag = event.detail.value;
+          }}
+        >
           <div class="tag {tag}">
             {tag}
           </div>
@@ -65,7 +69,11 @@
   </div>
 
   <div class="content" style="height:{dh}px">
-    <EditableText value={description} />
+    <EditableText
+      field="description"
+      bind:value={description}
+      on:update={update}
+    />
   </div>
 </div>
 

@@ -126,6 +126,17 @@
     });
   }
 
+  //////////UPDATE TASK//////////
+
+  async function updateTask(event) {
+    let taskRef = doc(tasksRef, event.detail.id);
+    await updateDoc(taskRef, {
+      [event.detail.field]: event.detail.value,
+      updated: params.name,
+      timestamp: serverTimestamp(),
+    });
+  }
+
   /////////////// MOVEMENT ////////////////
   function array_move(arr, old_index, new_index) {
     if (new_index >= arr.length) {
@@ -177,6 +188,7 @@
       on:clear_completed={clearCompleted}
       on:move_up={moveUp}
       on:move_down={moveDown}
+      on:update={updateTask}
     />
   </div>
 {/each}
