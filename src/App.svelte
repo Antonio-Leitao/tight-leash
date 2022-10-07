@@ -9,39 +9,28 @@
   import { wrap } from "svelte-spa-router/wrap";
   import Router from "svelte-spa-router";
   import { replace, location } from "svelte-spa-router";
-  import { getAuth, signOut } from "firebase/auth";
-  import { app } from "./lib/firebase_config.js";
 
   ////////////FIREBASE STUFF//////////////////
-  const logOut = () => {
-    const auth = getAuth(app);
-    signOut(auth).then(() => {
-      replace("/");
-    });
-  };
+  //function to log out
+  import { logOut, authUser, routeGuard } from "./lib/firebase_config.js";
 
   //need function to check if who is logged in is allowed
-
-  //function to log out
-
   //function to get logged user data
 
   ///////////ROUTING//////////////
-  const user = "Antonio";
 
   export const routes = {
     "/": Home,
-    "/researchers": Dashboard,
+    "/researchers": wrap({
+      component: Dashboard,
+      conditions: [authUser],
+      loadingComponent: Loading,
+    }),
 
     // This route has an async function as pre-condition
     "/researchers/:name": wrap({
       asyncComponent: () => import("./lib/Guarded.svelte"),
-
-      conditions: [
-        (detail) => {
-          return detail.params.name === user;
-        },
-      ],
+      conditions: [(detail) => routeGuard(detail.params.name)],
       loadingComponent: Loading,
     }),
     "/denied": Denied,

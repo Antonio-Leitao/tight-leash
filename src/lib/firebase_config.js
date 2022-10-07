@@ -1,4 +1,5 @@
 // Import the functions you need from the SDKs you need
+const allowed_users = ["Giovanni", "Antonio", "Maxime", "Simone"];
 import { initializeApp } from "firebase/app";
 import { replace } from "svelte-spa-router";
 import {
@@ -34,14 +35,6 @@ const provider = new GoogleAuthProvider();
 export const LogIn = () => {
   signInWithPopup(auth, provider)
     .then((result) => {
-      // This gives you a Google Access Token. You can use it to access the Google API.
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const user = result.user;
-      console.table(`User Email ${user.email}`);
-      console.table(`User name ${user.displayName}`);
-      console.log(auth.currentUser.email);
-      authenticateUser();
-
       replace("/researchers");
     })
     .catch((error) => {});
@@ -53,7 +46,7 @@ export const logOut = () => {
   });
 };
 
-export async function authenticateUser() {
+export async function userAlias() {
   //check first if a user is logged in
   //if a user is logged in
   const q = query(
@@ -61,7 +54,22 @@ export async function authenticateUser() {
     where("email", "==", auth.currentUser.email)
   );
   const querySnapshot = await getDocs(q);
+  if (querySnapshot.size < 1) {
+    return "not recognized";
+  }
+  let name;
   querySnapshot.forEach((doc) => {
-    console.log(doc.id, " => ", doc.data());
+    name = doc.data().alias;
   });
+  return name;
+}
+
+export async function authUser() {
+  let user = await userAlias();
+  return allowed_users.includes(user);
+}
+
+export async function routeGuard(route) {
+  let user = await userAlias();
+  return user === route || user === "Giovanni";
 }
