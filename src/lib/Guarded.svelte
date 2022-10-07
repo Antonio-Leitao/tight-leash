@@ -1,35 +1,17 @@
 <script>
+  import {
+    prefixes,
+    suffixes,
+    userData,
+    personColor,
+  } from "./firebase_config.js";
   import { flip } from "svelte/animate";
   import { quintOut } from "svelte/easing";
   import AddButton from "./AddButton.svelte";
   export let params;
   import Project from "./Project.svelte";
-  const prefixes = [
-    "New ",
-    "Improved ",
-    "A better ",
-    "Second try on ",
-    "Repeated ",
-    "Revamped ",
-    "Upgraded ",
-    "Enhanced ",
-    "Refined ",
-    "Boosted ",
-    "Polished ",
-  ];
-  const suffixes = [
-    "v0.1",
-    " beta",
-    ".com",
-    ".Inc",
-    "(patent pending)",
-    "v0.01",
-    "v2.0",
-    " alpha",
-    "pre-release",
-  ];
 
-  let user_color = "blue";
+  let user = userData();
 
   //FIREBASE
   import { db } from "./firebase_config.js";
@@ -119,7 +101,7 @@
       tag: event.detail.tag,
       week: event.detail.week, //fix this!
       project: event.detail.project,
-      updated: params.name,
+      updated: (await user).alias,
       timestamp: serverTimestamp(),
     };
     await setDoc(doc(tasksRef), task);
@@ -190,25 +172,27 @@
   }
 </script>
 
-<AddButton {user_color} on:new_project={addProject} />
+{#await personColor(params.name) then user_color}
+  <AddButton {user_color} on:new_project={addProject} />
 
-{#each projects as project, i (project)}
-  <div animate:flip={{ duration: 300, easing: quintOut }}>
-    <Project
-      {user_color}
-      name={project}
-      tasks={tasks.filter((task) => task.project === project)}
-      n_tasks={tasks.filter((task) => task.project === project).length}
-      completed_tasks={tasks.filter(
-        (task) => task.tag === "Completed" && task.project === project
-      ).length}
-      on:new_task={addTask}
-      on:delete_project={deleteProject}
-      on:clear_completed={clearCompleted}
-      on:move_up={moveUp}
-      on:move_down={moveDown}
-      on:rename={renameProject}
-      on:update={updateTask}
-    />
-  </div>
-{/each}
+  {#each projects as project, i (project)}
+    <div animate:flip={{ duration: 300, easing: quintOut }}>
+      <Project
+        {user_color}
+        name={project}
+        tasks={tasks.filter((task) => task.project === project)}
+        n_tasks={tasks.filter((task) => task.project === project).length}
+        completed_tasks={tasks.filter(
+          (task) => task.tag === "Completed" && task.project === project
+        ).length}
+        on:new_task={addTask}
+        on:delete_project={deleteProject}
+        on:clear_completed={clearCompleted}
+        on:move_up={moveUp}
+        on:move_down={moveDown}
+        on:rename={renameProject}
+        on:update={updateTask}
+      />
+    </div>
+  {/each}
+{/await}

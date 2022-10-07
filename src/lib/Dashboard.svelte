@@ -3,7 +3,8 @@
   import Weeklendar from "./Weeklendar.svelte";
   import { db } from "./firebase_config.js";
   import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
-  let user = "Giovanni";
+  import { userName, admin_users } from "./firebase_config.js";
+  const user = userName();
 
   let researchers = [];
   const tasksRef = collection(db, `users/`);
@@ -26,14 +27,6 @@
   //     "https://italian.news24viral.com/wp-content/uploads/2021/05/Dettagli-strazianti-su-Danny-DeVito.jpg",
   //   color: "orange",
   // },
-
-  // {
-  //   first_name: "Simone",
-  //   last_name: "Poetto",
-  //   alias: "Simone",
-  //   image: "static/Simone-poetto.jpg",
-  //   color: "green",
-  // },
 </script>
 
 <div class="researchers">
@@ -53,9 +46,13 @@
   {/each}
 </div>
 
-{#if user === "Giovanni"}
-  <Weeklendar {researchers} />
-{/if}
+{#await user}
+  <p>...waiting</p>
+{:then user}
+  {#if admin_users.includes(user)}
+    <Weeklendar {researchers} />
+  {/if}
+{/await}
 
 <style>
   .researchers {

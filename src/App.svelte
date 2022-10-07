@@ -10,12 +10,9 @@
   import Router from "svelte-spa-router";
   import { replace, location } from "svelte-spa-router";
 
-  ////////////FIREBASE STUFF//////////////////
-  //function to log out
-  import { logOut, authUser, routeGuard } from "./lib/firebase_config.js";
+  ////////////AUTH STUFF//////////////////
 
-  //need function to check if who is logged in is allowed
-  //function to get logged user data
+  import { logOut, authUser, routeGuard } from "./lib/firebase_config.js";
 
   ///////////ROUTING//////////////
 
@@ -28,7 +25,7 @@
     }),
 
     // This route has an async function as pre-condition
-    "/researchers/:name": wrap({
+    "/researchers/:name/": wrap({
       asyncComponent: () => import("./lib/Guarded.svelte"),
       conditions: [(detail) => routeGuard(detail.params.name)],
       loadingComponent: Loading,
@@ -42,7 +39,7 @@
   }
 </script>
 
-{#if $location !== "/"}
+{#if !["/", "/denied"].includes($location)}
   <span>
     <div class="banner">NPL Research Lab</div>
     {#if $location !== "/researchers"}
