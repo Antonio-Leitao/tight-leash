@@ -65,11 +65,17 @@ let NPC = {
   color: undefined,
 };
 
-export const LogIn = () => {
-  signInWithPopup(auth, provider)
-    .then(readUser)
-    .then(() => replace("/researchers"))
-    .catch(() => replace("/"));
+//might be an issue if it they run at the same time
+// export const LogIn = () => {
+//   signInWithPopup(auth, provider)
+//     .then(readUser)
+//     .then(() => replace("/researchers"))
+//     .catch(() => replace("/"));
+// };
+
+export const LogIn = async () => {
+  await signInWithPopup(auth, provider);
+  readUser().then(() => replace("/researchers"));
 };
 
 async function readUser() {

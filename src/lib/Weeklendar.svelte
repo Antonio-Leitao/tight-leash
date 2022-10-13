@@ -4,7 +4,7 @@
 </script>
 
 <span>
-  <h3>What are people</h3>
+  <h3>What are NPCs</h3>
   <div class="tag">Doing</div>
 </span>
 

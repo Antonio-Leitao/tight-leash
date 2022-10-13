@@ -29,21 +29,45 @@
   // },
 </script>
 
-<div class="researchers">
-  {#each researchers as researcher, i}
-    <div class="card">
-      <a href="/researchers/{researcher.alias}" use:link>
-        <div class="content">
-          <div
-            class="person"
-            style="--clr-border:var(--clr-{researcher.color});background-image: url({researcher.image});"
-          />
-          <div class="first_name">{researcher.first_name}</div>
-          <div class="last_name">{researcher.last_name}</div>
-        </div>
-      </a>
-    </div>
-  {/each}
+<div class="bigger-container">
+  <div class="back-icon">
+    <svg
+      id="Layer_1"
+      data-name="Layer 1"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 193.17 209.06"
+      ><defs
+        ><style>
+          .cls-1 {
+            fill: none;
+            stroke: #000;
+            stroke-miterlimit: 10;
+            stroke-width: 18.08px;
+          }
+        </style></defs
+      ><path
+        class="cls-1"
+        d="M17 96.54a25.31 25.31 0 0 1 35.8-35.8M15.71 95.26l107.41 107.41M51.51 59.46l89.51 89.5M176.72 112.73a25.32 25.32 0 0 1-35.81 35.8M70.69 7.03l106.13 106.13M176.18 95.9a25.31 25.31 0 1 0-35.8-35.8M177.46 94.62 70.05 202.03M141.66 58.82l-89.51 89.5M16.46 112.09a25.31 25.31 0 1 0 35.8 35.8M122.48 6.39 16.35 112.52"
+      /></svg
+    >
+  </div>
+
+  <div class="researchers">
+    {#each researchers as researcher, i}
+      <div class="card">
+        <a href="/researchers/{researcher.alias}" use:link>
+          <div class="content">
+            <div
+              class="person"
+              style="--clr-border:var(--clr-{researcher.color});background-image: url({researcher.image});"
+            />
+            <div class="first_name">{researcher.first_name}</div>
+            <div class="last_name">{researcher.last_name}</div>
+          </div>
+        </a>
+      </div>
+    {/each}
+  </div>
 </div>
 
 {#await user}
@@ -55,7 +79,21 @@
 {/await}
 
 <style>
+  .bigger-container {
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+  .back-icon {
+    top: 10%;
+    width: 35vw;
+    z-index: -2;
+  }
+  .back-icon .cls-1 {
+    stroke: var(--clr-gray);
+  }
   .researchers {
+    position: absolute;
     display: flex;
     padding: 3rem;
   }
