@@ -2,7 +2,7 @@
   import {
     prefixes,
     suffixes,
-    userData,
+    userName,
     personColor,
   } from "./firebase_config.js";
   import { flip } from "svelte/animate";
@@ -11,7 +11,7 @@
   export let params;
   import Project from "./Project.svelte";
 
-  let user = userData();
+  //let user = userData();
 
   //FIREBASE
   import { db } from "./firebase_config.js";
@@ -101,7 +101,7 @@
       tag: event.detail.tag,
       week: event.detail.week, //fix this!
       project: event.detail.project,
-      updated: (await user).alias,
+      updated: await userName(),
       timestamp: serverTimestamp(),
     };
     await setDoc(doc(tasksRef), task);

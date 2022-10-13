@@ -59,47 +59,43 @@ export const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
+let NPC = {
+  logged_in: false,
+  alias: undefined,
+  color: undefined,
+};
+
 export const LogIn = () => {
   signInWithPopup(auth, provider)
-    .then((result) => {
-      replace("/researchers");
-    })
-    .catch((error) => {});
+    .then(readUser)
+    .then(() => replace("/researchers"))
+    .catch(() => replace("/"));
 };
 
-export const logOut = () => {
-  signOut(auth).then(() => {
-    replace("/");
-  });
-};
-
-//returns true if a user is online
-export function isUserLogged() {
-  return auth.currentUser !== null;
-}
-
-export async function userData() {
-  //check first if a user is logged in
-  if (!isUserLogged()) {
-    replace("/denied");
-    return;
-  }
-
-  //if a user is logged in, which one?
+async function readUser() {
   const q = query(
     collection(db, "users"),
     where("email", "==", auth.currentUser.email)
   );
   const querySnapshot = await getDocs(q);
-  if (querySnapshot.size < 1) {
-    return { alias: "John Doe" };
-  }
-  let data;
   querySnapshot.forEach((doc) => {
-    data = doc.data();
+    NPC.alias = doc.data().alias;
+    NPC.color = doc.data().color;
+    NPC.logged_in = true;
+    console.log("NPC: Data Fetched");
   });
-  return data;
 }
+
+export const logOut = () => {
+  signOut(auth).then(() => {
+    console.log("NPC: Signed Out");
+    NPC.alias = undefined;
+    NPC.color = undefined;
+    NPC.logged_in = false;
+    console.log("NPC: Data Erased");
+    replace("/");
+  });
+};
 
 export async function personColor(person) {
   const q = query(collection(db, "users"), where("alias", "==", person));
@@ -111,20 +107,20 @@ export async function personColor(person) {
   return color;
 }
 
-export async function userName() {
-  if (isUserLogged) {
-    let user = await userData();
-    return user.alias;
-  }
-  replace("/denied");
+///////////////////////////NEW METHOD////////////////////////
+
+export async function routeGuard(route) {
+  return NPC.alias === route || admin_users.includes(NPC.alias);
 }
 
 export async function authUser() {
-  let user = await userData();
-  return allowed_users.includes(user.alias);
+  console.log("AUTH: ", NPC.alias);
+  return allowed_users.includes(NPC.alias);
 }
 
-export async function routeGuard(route) {
-  let user = await userData();
-  return user.alias === route || admin_users.includes(user.alias);
+export async function userName() {
+  if (NPC.alias !== undefined) {
+    return NPC.alias;
+  }
+  replace("/denied");
 }
