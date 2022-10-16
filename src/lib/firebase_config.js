@@ -88,17 +88,14 @@ async function readUser() {
     NPC.alias = doc.data().alias;
     NPC.color = doc.data().color;
     NPC.logged_in = true;
-    console.log("NPC: Data Fetched");
   });
 }
 
 export const logOut = () => {
   signOut(auth).then(() => {
-    console.log("NPC: Signed Out");
     NPC.alias = undefined;
     NPC.color = undefined;
     NPC.logged_in = false;
-    console.log("NPC: Data Erased");
     replace("/");
   });
 };
@@ -120,7 +117,6 @@ export async function routeGuard(route) {
 }
 
 export async function authUser() {
-  console.log("AUTH: ", NPC.alias);
   return allowed_users.includes(NPC.alias);
 }
 

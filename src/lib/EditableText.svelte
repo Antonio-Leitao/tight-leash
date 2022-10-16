@@ -9,7 +9,6 @@
   const dispatch = createEventDispatcher();
   import { markdownParser } from "./scripts/markdown_parser";
 
-
   import { onMount } from "svelte";
   $: htmlvalue = markdownParser(value);
   onMount(() => {
@@ -82,16 +81,25 @@
     margin: 0;
     font-size: 0.9rem;
   }
-  .display :global(h2) {
-    margin: 0;
-    font-size: 0.8rem;
+
+  .display :global(br) {
+    display: block;
+    content: "";
+    margin-top: 0;
   }
-  .display :global(h3) {
-    margin: 0;
-    font-size: 0.75rem;
+
+  .display :global(br + br) {
+    display: block;
+    content: "";
+    margin-top: 0.5rem;
   }
-  .display :global(h4) {
-    margin: 0;
-    font-size: 0.7rem;
+
+  .display :global(h1 + br) {
+    display: block;
+    content: "";
+    margin-top: 0.5rem;
+  }
+  .display :global(.katex span) {
+    font-family: "Times New Roman", serif;
   }
 </style>

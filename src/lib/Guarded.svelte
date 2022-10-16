@@ -133,7 +133,7 @@
     let taskRef = doc(tasksRef, event.detail.id);
     await updateDoc(taskRef, {
       [event.detail.field]: event.detail.value,
-      updated: params.name,
+      updated: await userName(),
       timestamp: serverTimestamp(),
     });
   }
