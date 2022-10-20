@@ -75,8 +75,7 @@
   }
 
   .login {
-    position: absolute;
-    top: 8%;
+    position: relative;
     width: 40vw;
     height: fit-content;
     border-radius: 0.5rem;
