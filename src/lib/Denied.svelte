@@ -132,6 +132,7 @@
     margin: 0 0 0 0.5rem;
     font-weight: 500;
     font-size: 1rem;
+
   }
   button:hover {
     background-color: var(--background-hover);
