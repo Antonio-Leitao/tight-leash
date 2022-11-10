@@ -1,5 +1,5 @@
 // Import the functions you need from the SDKs you need
-const allowed_users = ["Giovanni", "Antonio", "Maxime", "Simone", "Admin"];
+const allowed_users = ["Giovanni", "Antonio", "Maxime", "Simone", "Admin", "Marco"];
 export const admin_users = ["Giovanni", "Admin"];
 export const prefixes = [
   "New ",
